@@ -119,18 +119,20 @@ def dataset_exists(dataset_name, embeddings_dir):
     return os.path.exists(os.path.join(embeddings_dir, dataset_name))
 
 def is_supported_remote_repository(repo_url):
-    # Check if the given repo_url is supported by this script.
-    for supported_url in supported_remote_repositories:
-        if repo_url.startswith(supported_url):
-            return True
-    return False
+    return any(
+        repo_url.startswith(supported_url)
+        for supported_url in supported_remote_repositories
+    )
 
 def get_download_url_for_remote_repository(repo_url):
-    # Get the zip file URL for the given remote repository URL.
-    for supported_url in supported_remote_repositories:
-        if repo_url.startswith(supported_url):
-            return repo_url + supported_remote_repositories[supported_url]
-    return None
+    return next(
+        (
+            repo_url + supported_remote_repositories[supported_url]
+            for supported_url in supported_remote_repositories
+            if repo_url.startswith(supported_url)
+        ),
+        None,
+    )
 
 
 ## Generator functions
